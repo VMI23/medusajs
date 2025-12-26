@@ -1,7 +1,5 @@
-version: "3.9"
-
 services:
-  # Redis (still local, required for caching/events)
+  # Redis (local, required for caching/events)
   redis:
     image: redis:7-alpine
     container_name: medusa_redis
@@ -48,9 +46,6 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       COOKIE_SECRET: ${COOKIE_SECRET}
       NODE_ENV: ${NODE_ENV:-production}
-    volumes:
-      - ./backend:/server
-      - /server/node_modules
     networks:
       - medusa_net
     healthcheck:
@@ -66,7 +61,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 60s
+      start_period: 90s
 
   # Storefront (Next.js)
   storefront:
@@ -88,9 +83,6 @@ services:
       NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL}
       NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY}
       NODE_ENV: ${NODE_ENV:-production}
-    volumes:
-      - ./storefront:/app
-      - /app/node_modules
     networks:
       - medusa_net
 
