@@ -18,6 +18,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        NODE_ENV: production # Add this line
     container_name: medusa_backend
     restart: unless-stopped
     depends_on:
@@ -38,7 +40,7 @@ services:
       AUTH_CORS: ${AUTH_CORS}
       JWT_SECRET: ${JWT_SECRET}
       COOKIE_SECRET: ${COOKIE_SECRET}
-      NODE_ENV: production
+      NODE_ENV: ${NODE_ENV:-production}
     networks:
       - medusa_net
     healthcheck:
@@ -51,10 +53,11 @@ services:
           "--spider",
           "http://localhost:9000/health",
         ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 120s # Increased - build takes time
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 90s
+
   # Storefront (Next.js)
   storefront:
     build:
