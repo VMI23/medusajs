@@ -14,7 +14,6 @@ services:
       timeout: 3s
       retries: 5
 
-  # Medusa Backend
   medusa:
     build:
       context: ./backend
@@ -26,12 +25,6 @@ services:
         condition: service_healthy
     ports:
       - "9000:9000"
-    command:
-      [
-        "sh",
-        "-c",
-        "sed -i 's/\\r$//' ./start.sh && chmod +x ./start.sh && ./start.sh",
-      ]
     env_file:
       - ./.env
     environment:
@@ -45,7 +38,7 @@ services:
       AUTH_CORS: ${AUTH_CORS}
       JWT_SECRET: ${JWT_SECRET}
       COOKIE_SECRET: ${COOKIE_SECRET}
-      NODE_ENV: ${NODE_ENV:-production}
+      NODE_ENV: production
     networks:
       - medusa_net
     healthcheck:
@@ -58,11 +51,10 @@ services:
           "--spider",
           "http://localhost:9000/health",
         ]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 90s
-
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s # Increased - build takes time
   # Storefront (Next.js)
   storefront:
     build:
