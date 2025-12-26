@@ -1,4 +1,4 @@
-import { loadEnv, defineConfig, Modules } from '@medusajs/framework/utils'
+import { Modules, defineConfig, loadEnv } from '@medusajs/framework/utils'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -12,17 +12,27 @@ module.exports = defineConfig({
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
-    databaseDriverOptions: { ssl: false, sslmode: 'disable' },
+    databaseDriverOptions: {
+      connection: {
+        ssl: {
+          rejectUnauthorized: false
+        }
+      }
+    },
   },
   modules: [
     {
       resolve: "@medusajs/cache-redis",
-      options: { redisUrl: process.env.CACHE_REDIS_URL || process.env.REDIS_CACHE_URL || process.env.REDIS_URL },
+      options: {
+        redisUrl: process.env.CACHE_REDIS_URL || process.env.REDIS_CACHE_URL || process.env.REDIS_URL
+      },
       key: Modules.CACHE,
     },
     {
       resolve: "@medusajs/event-bus-redis",
-      options: { redisUrl: process.env.EVENTS_REDIS_URL || process.env.REDIS_URL },
+      options: {
+        redisUrl: process.env.EVENTS_REDIS_URL || process.env.REDIS_URL
+      },
       key: Modules.EVENT_BUS,
     },
   ],
